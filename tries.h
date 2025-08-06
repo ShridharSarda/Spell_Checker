@@ -1,22 +1,27 @@
+#ifndef TRIE_H
+#define TRIE_H
 
-#include <iostream>
-#include <vector>
+#include <string>
 using namespace std;
 
 struct TrieNode {
-    bool terminating = false;
-    TrieNode* children[26] = {NULL};
+    TrieNode* children[26];
+    bool isEndOfWord;
+
+    TrieNode() {
+        isEndOfWord = false;
+        for (int i = 0; i < 26; i++)
+            children[i] = nullptr;
+    }
 };
 
 class Trie {
-    TrieNode* root;
 public:
-    Trie();
-
-    void insertWord(string word);
-    bool searchWord(string word);
-    bool deleteWord(string word);
-    bool updateWord(string oldWord, string newWord);
-
-    //vector<string, int> getDictionary();
+    Trie(); 
+    void insert(const string &word);
+    bool search(const string &word);
+private:
+    TrieNode* root;
 };
+
+#endif

@@ -1,54 +1,32 @@
-#include "tries.h"
+#include "trie.h"
+#include <cctype>
 
-
-Trie::Trie(){
+Trie::Trie() {
     root = new TrieNode();
 }
 
-
-void Trie::insertWord(string word){
-    TrieNode* currNode = root;
-    for(char c: word){
-        if (currNode->children[c - 'a']==NULL) {
-            currNode->children[c - 'a'] = new TrieNode();        
-        }
-        currNode = currNode->children[c - 'a'];
-    }    
-    currNode->terminating = true;
-}
-
-bool Trie::searchWord(string word){
-    TrieNode* currNode = root;
-    for(char c: word){
-        if( currNode->children[c - 'a'] != NULL) {        
-            currNode = currNode->children[c - 'a'];
-        }else{
-            return false;
-        }
+void Trie::insert(const string &word) {
+    TrieNode* node = root;
+    for (char c : word) {
+        if (!isalpha(c)) continue; // ignore non-letters
+        c = tolower(c);
+        int index = c - 'a';
+        if (!node->children[index])
+            node->children[index] = new TrieNode();
+        node = node->children[index];
     }
-    return currNode->terminating;
+    node->isEndOfWord = true;
 }
 
-
-bool Trie::deleteWord(string word){
-    TrieNode* currNode = root;
-    for(char c: word){
-        if( currNode->children[c - 'a'] != NULL) {        
-            currNode = currNode->children[c - 'a'];
-        }else{
+bool Trie::search(const string &word) {
+    TrieNode* node = root;
+    for (char c : word) {
+        if (!isalpha(c)) continue;
+        c = tolower(c);
+        int index = c - 'a';
+        if (!node->children[index])
             return false;
-        }
+        node = node->children[index];
     }
-    currNode->terminating = false;
-    return true;
-}
-
-
-bool Trie::updateWord(string oldWord, string newWord){
-    
-    bool ret = deleteWord(oldWord);
-    if(ret)
-        this->insertWord(newWord);
-    
-    return ret;
+    return node->isEndOfWord;
 }
